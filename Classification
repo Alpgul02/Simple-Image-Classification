@@ -1,0 +1,52 @@
+import tensorflow as tf
+
+from tensorflow import keras
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+(train_i, train_l), (test_i, test_l) = tf.keras.datasets.cifar10.load_data()
+
+classnames = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+
+model = keras.Sequential([    
+    keras.layers.Flatten(),
+    keras.layers.Dense(100, activation='relu'),
+    keras.layers.Dense(10)
+])
+model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+model.fit(train_i, train_l, epochs=20)
+
+test_loss, test_acc = model.evaluate(test_i,  test_l, verbose=2)
+
+prediction = tf.keras.Sequential([model, tf.keras.layers.Softmax()]).predict(test_i)
+
+i = 4000
+
+prediction[i]
+
+prediction_made= np.argmax(prediction[i])
+
+f= train_l[i]
+
+s=str(train_l[i])
+print(str(s)[1:-1])
+
+b = int(str(s)[1:-1])
+
+y = classnames[b]
+
+x = classnames[prediction_made]
+
+img = train_i
+plt.grid(False)
+plt.xticks([]) 
+plt.yticks([]) 
+plt.imshow(img[i])
+
+plt.xlabel('The True Label is ' + repr(y) + 
+           ', and The Predicted Label is ' + repr(x) + '...') 
