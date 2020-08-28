@@ -10,22 +10,26 @@ import matplotlib.pyplot as plt
 
 classnames = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
+model = models.Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+
 model = keras.Sequential([    
     keras.layers.Flatten(),
-    keras.layers.Dense(100, activation='relu'),
-    keras.layers.Dense(10)
+    keras.layers.Dense(100, activation='relu'), #burada kaç tane node olacağını belirtiyoruz yani mesela burada 108 se 108 tane node vardır. Node sayısını arrtırdıkça işlem hızımız düşüyor ama tahmin değerlerimiz gerçeğe daha yakın oluyor.
+    keras.layers.Dense(10) #burada ise 10 diyoruz çünkü 10 tane class içinden seçecek.
 ])
 model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-model.fit(train_i, train_l, epochs=20)
+model.fit(train_i, train_l, epochs=100)
 
 test_loss, test_acc = model.evaluate(test_i,  test_l, verbose=2)
-
+print(test_acc)
 prediction = tf.keras.Sequential([model, tf.keras.layers.Softmax()]).predict(test_i)
 
-i = 4000
+i = 90
 
 prediction[i]
 
